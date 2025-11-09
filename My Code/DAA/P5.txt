@@ -1,0 +1,196 @@
+Perfect 👏 — let’s break down **exactly how the output of your N-Queens program** is coming, step by step,
+using your sample example 👇
+
+---
+
+### 🧩 Input:
+
+```
+Enter the size of the chessboard (N): 4
+Enter the column number (0 to N-1) to place the first Queen: 1
+```
+
+This means:
+
+* You’re working with a **4×4 chessboard**.
+* The **first queen** is already placed at **row 0, column 1**.
+
+---
+
+## 🔹 Step 1: Initial Chessboard
+
+After placing the first queen manually:
+
+```
+0 1 0 0
+0 0 0 0
+0 0 0 0
+0 0 0 0
+```
+
+Here `1` represents a **queen**, and `0` means **empty cell**.
+So currently, there’s a queen at `(row 0, column 1)`.
+
+---
+
+## 🔹 Step 2: Start Backtracking from Row 1
+
+The algorithm now tries to place a queen in **row 1**.
+
+### Row 1 possibilities:
+
+| Column | Safe? | Reason                                |
+| :----- | :---- | :------------------------------------ |
+| 0      | ✅     | Not same column, no diagonal conflict |
+| 1      | ❌     | Same column as first queen            |
+| 2      | ❌     | Same diagonal as first queen          |
+| 3      | ✅     | No conflict                           |
+
+Algorithm tries **column 0 first**, but later finds it leads to dead end, so it **backtracks**.
+Then it tries **column 3**, which works successfully.
+
+Now board looks like:
+
+```
+0 1 0 0
+0 0 0 1
+0 0 0 0
+0 0 0 0
+```
+
+---
+
+## 🔹 Step 3: Move to Row 2
+
+Now it tries to place the **third queen** in **row 2**.
+
+### Row 2 possibilities:
+
+| Column | Safe? | Reason                           |
+| :----- | :---- | :------------------------------- |
+| 0      | ✅     | No conflict                      |
+| 1      | ❌     | Attacked by diagonal from (1, 3) |
+| 2      | ❌     | Attacked by diagonal from (0, 1) |
+| 3      | ❌     | Same column as (1, 3)            |
+
+✅ So the algorithm places a queen at `(2, 0)`.
+
+Board now:
+
+```
+0 1 0 0
+0 0 0 1
+1 0 0 0
+0 0 0 0
+```
+
+---
+
+## 🔹 Step 4: Move to Row 3
+
+Now for **row 3**, check all columns:
+
+| Column | Safe? | Reason                |
+| :----- | :---- | :-------------------- |
+| 0      | ❌     | Same column as (2, 0) |
+| 1      | ❌     | Diagonal from (2, 0)  |
+| 2      | ✅     | No conflict           |
+| 3      | ❌     | Diagonal from (1, 3)  |
+
+✅ So we place the last queen at `(3, 2)`.
+
+Final board:
+
+```
+0 1 0 0
+0 0 0 1
+1 0 0 0
+0 0 1 0
+```
+
+---
+
+## 🔹 Step 5: Base Case Reached
+
+Now **row = 4 (equal to N)** → all queens are placed successfully.
+So, the function prints:
+
+```
+One of the possible solutions:
+0 1 0 0
+0 0 0 1
+1 0 0 0
+0 0 1 0
+```
+
+---
+
+## 🔹 Step 6: Why is it called a “safe” configuration?
+
+In this solution:
+
+* No two queens share the **same row** ✅
+* No two queens share the **same column** ✅
+* No two queens share the **same diagonal** ✅
+
+Hence, this arrangement is a **valid N-Queens solution**.
+
+---
+
+## 🔹 Step 7: How the Backtracking Works
+
+1️⃣ The program places a queen in the **first available safe column** in each row.
+2️⃣ If it reaches a row where **no safe position exists**, it goes **back (backtracks)** to the previous row,
+removes that queen, and tries the next column.
+3️⃣ Once all queens are placed safely, it prints the final board.
+
+---
+
+## 🔹 Example Summary
+
+| Step | Row | Column Chosen | Reason                           |
+| :--- | :-: | :-----------: | :------------------------------- |
+| 1    |  0  |       1       | Given manually                   |
+| 2    |  1  |       3       | Safe after checking conflicts    |
+| 3    |  2  |       0       | Safe position                    |
+| 4    |  3  |       2       | Safe position                    |
+| ✅    |  -  |       -       | All 4 queens placed successfully |
+
+---
+
+## 🔹 Output Recap
+
+```
+Initial board with first Queen placed:
+0 1 0 0
+0 0 0 0
+0 0 0 0
+0 0 0 0
+
+One of the possible solutions:
+0 1 0 0
+0 0 0 1
+1 0 0 0
+0 0 1 0
+```
+
+---
+
+### 🧠 Time & Space Complexity (Recap)
+
+| Type      | Complexity                                                | Reason                                                    |
+| :-------- | :-------------------------------------------------------- | :-------------------------------------------------------- |
+| **Time**  | O(N!)                                                     | Because it tries every possible combination in worst case |
+| **Space** | O(N²)** (for board)** or **O(N)** (if using column lists) | Stores the chessboard matrix                              |
+
+---
+
+✅ **Final Explanation:**
+
+> The program uses **backtracking** to place N queens on an N×N board so that no two queens threaten each other.
+> Starting with the first queen (already placed), it tries to safely place one queen in each row.
+> It backtracks whenever a conflict occurs and stops when all queens are placed safely.
+
+---
+
+Would you like me to show what happens if you choose a **different starting column** for the first queen (e.g., column 0 or 2), so you can see how the pattern of backtracking changes?

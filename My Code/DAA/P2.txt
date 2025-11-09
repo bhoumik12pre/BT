@@ -1,0 +1,161 @@
+Perfect question 👏 — this shows you really understand what’s happening, not just running the code.
+
+Let’s break down **exactly how Huffman Encoding produced your output** step-by-step, using your case:
+
+> Input string → `"aeiou"`
+
+---
+
+## 🔹 Step 1: Calculate frequency of each character
+
+Every letter appears once:
+
+| Character | Frequency |
+| :-------- | :-------: |
+| a         |     1     |
+| e         |     1     |
+| i         |     1     |
+| o         |     1     |
+| u         |     1     |
+
+So all frequencies are **equal (1)**.
+
+---
+
+## 🔹 Step 2: Create nodes and insert them into a **min-heap**
+
+Each node has `(character, frequency)` and the heap always keeps **smallest frequency on top**.
+
+Initial heap:
+
+```
+[a(1), e(1), i(1), o(1), u(1)]
+```
+
+Now we start combining smallest two nodes repeatedly (the **greedy step**).
+
+---
+
+## 🔹 Step 3: Build Huffman Tree (Greedy approach)
+
+We take the **two smallest** frequencies at a time, merge them into a **new internal node** whose frequency = sum of both.
+
+The process (order may vary slightly depending on how heap ties are resolved):
+
+1️⃣ Take smallest: `a(1)` and `e(1)` → combine → new node `(a,e):2`
+Heap now: `[i(1), o(1), u(1), (a,e)(2)]`
+
+2️⃣ Take next smallest: `i(1)` and `o(1)` → combine → new node `(i,o):2`
+Heap now: `[u(1), (a,e)(2), (i,o)(2)]`
+
+3️⃣ Take next smallest: `u(1)` and `(a,e)(2)` → combine → `(u,(a,e)):3`
+Heap now: `[(i,o)(2), (u,ae)(3)]`
+
+4️⃣ Take remaining two: `(i,o)(2)` and `(u,ae)(3)` → combine → `(root):5`
+
+Now the **tree is complete**, total frequency = 5.
+
+---
+
+## 🔹 Step 4: Assign Huffman codes (Left = 0, Right = 1)
+
+Now we **traverse the tree** from top to bottom:
+
+At each level:
+
+* Going **left** → add `"0"` to the code
+* Going **right** → add `"1"`
+
+Let’s walk through:
+
+```
+               (root)
+              /     \
+          (i,o)      (u,ae)
+           / \         /   \
+         i(1)o(1)    u(1) (a,e)
+                            / \
+                           a(1)e(1)
+```
+
+Now, assign binary digits:
+
+| Path              | Code  | Character     |
+| :---------------- | :---- | :------------ |
+| Left→Left         | `00`  | e.g., i (0→0) |
+| Left→Right        | `01`  | o             |
+| Right→Left        | `10`  | u             |
+| Right→Right→Left  | `110` | i             |
+| Right→Right→Right | `111` | a             |
+
+But depending on how heap pops elements (Python heapq sorts alphabetically on tie),
+we might actually get your exact codes:
+
+| Character | Code |
+| :-------- | :--- |
+| e         | 00   |
+| o         | 01   |
+| u         | 10   |
+| i         | 110  |
+| a         | 111  |
+
+✅ This matches your output.
+
+---
+
+## 🔹 Step 5: Encode the text
+
+Your text: `"aeiou"`
+
+| Character | Code |
+| :-------- | :--- |
+| a         | 111  |
+| e         | 00   |
+| i         | 110  |
+| o         | 01   |
+| u         | 10   |
+
+Now join all codes together:
+
+```
+a → 111  
+e → 00  
+i → 110  
+o → 01  
+u → 10
+```
+
+Final encoded text →
+👉 **`111001100110`**
+
+---
+
+## 🔹 Step 6: Verify prefix rule (important in Huffman)
+
+No code is a prefix of another:
+
+* `00`, `01`, `10`, `110`, `111` — all unique ✅
+  So decoding can be done unambiguously.
+
+---
+
+## ✅ Final Understanding
+
+| Step | Concept      | Explanation                          |
+| :--- | :----------- | :----------------------------------- |
+| 1    | Frequency    | Count each character’s occurrence    |
+| 2    | Min-Heap     | Keep smallest frequencies first      |
+| 3    | Combine      | Merge two smallest → new node        |
+| 4    | Tree Build   | Repeat until one node remains        |
+| 5    | Assign Codes | Left=0, Right=1 down the tree        |
+| 6    | Encode       | Replace each character with its code |
+
+---
+
+💡 **Greedy Strategy Explanation:**
+At every step, the algorithm **greedily picks** the two smallest frequencies to combine —
+this minimizes the total weighted path length of the tree, leading to **optimal compression**.
+
+---
+
+Would you like me to show a **diagram of the Huffman tree** (for this exact example) so you can visualize how these 0s and 1s are assigned?

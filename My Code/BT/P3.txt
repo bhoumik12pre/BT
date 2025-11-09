@@ -1,0 +1,244 @@
+Absolutely 👍 — let’s go through your **Bank Account Smart Contract** line by line in a clear **student-friendly explanation**,
+so you’ll fully understand what each part does and can easily explain it during your **viva** or **practical exam**.
+
+---
+
+## 🧾 **Full Code (for reference)**
+
+```solidity
+// SPDX-License-Identifier: MIT
+pragma solidity ^0.8.0;
+
+contract BankAccount {
+    address public customer;
+    uint256 private balance;
+
+    constructor() {
+        customer = msg.sender;
+        balance = 0;
+    }
+
+    function deposit() public payable {
+        require(msg.sender == customer, "Only the account owner can deposit.");
+        require(msg.value > 0, "Deposit amount must be greater than zero.");
+        balance += msg.value;
+    }
+
+    function withdraw(uint256 amount) public {
+        require(msg.sender == customer, "Only the account owner can withdraw.");
+        require(amount <= balance, "Insufficient balance.");
+        balance -= amount;
+        payable(msg.sender).transfer(amount);
+    }
+
+    function getBalance() public view returns (uint256) {
+        require(msg.sender == customer, "Only the account owner can view balance.");
+        return balance;
+    }
+}
+```
+
+---
+
+## 🧠 **Step-by-Step Explanation**
+
+### 🟩 1️⃣ License and Compiler Version
+
+```solidity
+// SPDX-License-Identifier: MIT
+pragma solidity ^0.8.0;
+```
+
+* `SPDX-License-Identifier`: tells that the code uses an MIT open-source license.
+* `pragma solidity ^0.8.0;` ensures this contract works on compiler version **0.8.0 or above**.
+  It helps avoid compatibility issues.
+
+---
+
+### 🟩 2️⃣ Contract Declaration
+
+```solidity
+contract BankAccount {
+```
+
+* Everything inside this block defines the smart contract called `BankAccount`.
+* Think of it as a **class** in object-oriented programming.
+
+---
+
+### 🟩 3️⃣ State Variables
+
+```solidity
+address public customer;
+uint256 private balance;
+```
+
+* `address`: a special data type in Solidity that stores **Ethereum wallet addresses**.
+* `customer`: stores the address of the person who owns this bank account (the contract deployer).
+* `uint256`: an unsigned integer (used to store Ether amount in **wei**).
+* `private balance`: holds the **current balance** of the account.
+
+  * `private` means other contracts can’t access it directly.
+
+---
+
+### 🟩 4️⃣ Constructor
+
+```solidity
+constructor() {
+    customer = msg.sender;
+    balance = 0;
+}
+```
+
+* The **constructor** runs **only once**, when the contract is deployed.
+* `msg.sender` = the Ethereum address that deployed the contract.
+* So whoever deploys the contract automatically becomes the **owner/customer**.
+* Sets the starting balance to `0`.
+
+🧩 Example:
+If you deploy the contract using your MetaMask account `0xABC...123`,
+then `customer = 0xABC...123`.
+
+---
+
+### 🟩 5️⃣ Deposit Function
+
+```solidity
+function deposit() public payable {
+    require(msg.sender == customer, "Only the account owner can deposit.");
+    require(msg.value > 0, "Deposit amount must be greater than zero.");
+    balance += msg.value;
+}
+```
+
+#### 🔍 What it does:
+
+* Allows the owner to deposit Ether (cryptocurrency) into the contract.
+* The keyword **`payable`** is necessary to receive Ether.
+* `msg.value` stores the **amount of Ether sent** (in wei).
+
+#### 🔹 Line-by-line:
+
+1. `require(msg.sender == customer, "Only the account owner can deposit.");`
+   → Only the account owner can make a deposit.
+
+2. `require(msg.value > 0, "Deposit amount must be greater than zero.");`
+   → Prevents depositing zero Ether (meaningless).
+
+3. `balance += msg.value;`
+   → Adds the deposited amount to the stored balance.
+
+---
+
+### 🟩 6️⃣ Withdraw Function
+
+```solidity
+function withdraw(uint256 amount) public {
+    require(msg.sender == customer, "Only the account owner can withdraw.");
+    require(amount <= balance, "Insufficient balance.");
+    balance -= amount;
+    payable(msg.sender).transfer(amount);
+}
+```
+
+#### 🔍 What it does:
+
+* Lets the customer withdraw a specified amount of Ether from the account.
+
+#### 🔹 Line-by-line:
+
+1. `require(msg.sender == customer, "Only the account owner can withdraw.");`
+   → Ensures only the account owner can withdraw.
+
+2. `require(amount <= balance, "Insufficient balance.");`
+   → Prevents withdrawing more than available.
+
+3. `balance -= amount;`
+   → Deducts withdrawn Ether from internal balance.
+
+4. `payable(msg.sender).transfer(amount);`
+   → Sends the requested Ether amount back to the user’s wallet.
+
+🧩 Example:
+If balance = 5 ETH, and you call `withdraw(2 ETH)`
+→ 2 ETH is transferred to your wallet,
+and the stored balance becomes 3 ETH.
+
+---
+
+### 🟩 7️⃣ Show Balance Function
+
+```solidity
+function getBalance() public view returns (uint256) {
+    require(msg.sender == customer, "Only the account owner can view balance.");
+    return balance;
+}
+```
+
+#### 🔍 What it does:
+
+* Returns the customer’s current balance in **wei**.
+* Marked as **`view`** because it does not change blockchain state (no gas fee).
+
+🧩 Example:
+If your account balance is 2 ETH, it will show:
+`2000000000000000000 wei` (since 1 ETH = 10¹⁸ wei).
+
+---
+
+### 🟩 8️⃣ Access Control (Security Logic)
+
+* Only **the owner (customer)** can deposit, withdraw, or view balance.
+* This is enforced using the `require()` statements that check `msg.sender`.
+
+---
+
+## ⚙️ **How It Works Together (Step-by-Step Flow)**
+
+| Step | Action          | What Happens                                        |
+| :--- | :-------------- | :-------------------------------------------------- |
+| 1    | Deploy Contract | You become `customer`; balance = 0                  |
+| 2    | Deposit         | You send Ether; `balance += msg.value`              |
+| 3    | Withdraw        | You request amount; Ether sent; `balance -= amount` |
+| 4    | Get Balance     | Function returns stored balance in wei              |
+
+---
+
+## 🧪 **Example in Remix IDE**
+
+1️⃣ Deploy contract.
+→ `customer = 0xYourAddress`
+→ `balance = 0`
+
+2️⃣ Call `deposit()` and enter **Value: 2 ether**
+→ `balance = 2 ether`
+
+3️⃣ Call `withdraw(1000000000000000000)` (1 ETH in wei)
+→ `balance = 1 ether`
+
+4️⃣ Call `getBalance()`
+→ Returns `1000000000000000000`
+
+---
+
+## 🧮 **Extra Notes (for Viva)**
+
+| Question                          | Short Answer                                           |
+| :-------------------------------- | :----------------------------------------------------- |
+| Why do we use `require()`?        | To enforce conditions before executing function logic. |
+| What does `msg.sender` represent? | The address that initiated the transaction.            |
+| What is the purpose of `payable`? | Allows a function or address to receive Ether.         |
+| What is stored in `balance`?      | The internal record of deposited Ether.                |
+| How is Ether unit stored?         | As **wei** (1 ETH = 10¹⁸ wei).                         |
+
+---
+
+✅ **Summary:**
+This smart contract acts as a **mini bank** on Ethereum,
+allowing a single user (the contract owner) to **deposit, withdraw, and check balance** securely using blockchain transactions.
+
+---
+
+Would you like me to show how to **extend this contract** to support **multiple customers** (so each wallet has its own account inside one contract)?
+It’s a small but impressive upgrade often asked in viva or advanced lab exams.

@@ -1,0 +1,130 @@
+Excellent 👏 — let’s go step by step and see **exactly how your Fractional Knapsack output is coming**, using the **same example you ran**:
+
+---
+
+### 🧩 Input:
+
+```
+Number of items = 3
+
+Item 1: value = 60,  weight = 10  
+Item 2: value = 100, weight = 20  
+Item 3: value = 120, weight = 30  
+
+Knapsack capacity = 50
+```
+
+---
+
+## 🔹 Step 1: Calculate value/weight ratio for each item
+
+| Item | Value | Weight | Ratio (value ÷ weight) |
+| :--- | :---: | :----: | :--------------------: |
+| 1    |   60  |   10   |         **6.0**        |
+| 2    |  100  |   20   |         **5.0**        |
+| 3    |  120  |   30   |         **4.0**        |
+
+✅ The **higher the ratio**, the **better the value per unit weight** —
+so the algorithm will **pick items in descending order of ratio**:
+→ Item 1 → Item 2 → Item 3.
+
+---
+
+## 🔹 Step 2: Sort by ratio (Greedy strategy)
+
+Sorted order (highest ratio first):
+
+```
+Item 1 → ratio 6.0
+Item 2 → ratio 5.0
+Item 3 → ratio 4.0
+```
+
+---
+
+## 🔹 Step 3: Start filling the knapsack
+
+| Step | Item   | Weight | Value | Remaining Capacity | Action                       | Added Value |
+| :--- | :----- | :----: | :---: | :----------------: | :--------------------------- | :---------: |
+| 1    | Item 1 |   10   |   60  |         50         | Fits completely              |     +60     |
+| 2    | Item 2 |   20   |  100  |         40         | Fits completely              |     +100    |
+| 3    | Item 3 |   30   |  120  |         20         | Only 20/30 fits (fractional) |     +80     |
+
+**Explanation for Step 3:**
+
+* Knapsack has **50 capacity**.
+* After taking Item 1 (10) → remaining = 40
+* After taking Item 2 (20) → remaining = 20
+* Now Item 3 weighs 30 but only 20 can fit →
+  Fraction = 20 / 30 = 0.6667 (≈ 66.67%)
+  So we take **66.67% of Item 3’s value** →
+  `120 × 0.6667 = 80`
+
+---
+
+## 🔹 Step 4: Total Value
+
+| Item Taken                              | % Taken | Value Added |
+| :-------------------------------------- | :-----: | :---------: |
+| Item 1                                  |   100%  |      60     |
+| Item 2                                  |   100%  |     100     |
+| Item 3                                  |  66.67% |      80     |
+| **Total Value = 60 + 100 + 80 = 240** ✅ |         |             |
+
+---
+
+## 🔹 Step 5: Output Explanation
+
+So, the program prints:
+
+```
+Took 100% of item (value=60.0, weight=10.0)
+Took 100% of item (value=100.0, weight=20.0)
+Took 66.67% of item (value=120.0, weight=30.0)
+
+Maximum value in Knapsack = 240.00
+```
+
+---
+
+## 🧠 Why this works (Logic Explanation)
+
+* The **greedy method** picks the **most valuable items per kg** first.
+* It **doesn’t check all combinations** (like dynamic programming),
+  it just keeps choosing the next best ratio.
+* Since we can take **fractions**, this strategy gives the **optimal answer** for the fractional case.
+
+---
+
+### 🔹 Formula Recap
+
+If item fits completely:
+
+```
+total_value += value
+capacity -= weight
+```
+
+If item fits partially:
+
+```
+fraction = remaining_capacity / weight
+total_value += value * fraction
+capacity = 0
+```
+
+---
+
+### 🔹 Final Answer
+
+✅ **Maximum value = 240**
+✅ **Items taken:**
+
+* 100% of Item 1
+* 100% of Item 2
+* 66.67% of Item 3
+
+---
+
+Would you like me to show the **same explanation but for a different example** (like when the highest ratio item doesn’t fit at all first)?
+That helps you understand how fractions are applied differently.

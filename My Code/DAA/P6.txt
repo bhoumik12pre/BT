@@ -1,0 +1,217 @@
+Excellent 👏 — let’s carefully go step-by-step and understand **how the output of your Quick Sort (deterministic and randomized)** program is generated.
+
+We’ll use your sample input for clarity 👇
+
+---
+
+### 🧩 **Input:**
+
+```
+Enter number of elements: 6
+Enter element 1: 45
+Enter element 2: 12
+Enter element 3: 7
+Enter element 4: 89
+Enter element 5: 32
+Enter element 6: 50
+```
+
+So your **original unsorted array** is:
+
+```
+[45, 12, 7, 89, 32, 50]
+```
+
+---
+
+## 🔹 Step 1: Deterministic Quick Sort
+
+This version **always chooses the last element** as the pivot.
+
+Let’s go step-by-step 👇
+
+### ➤ First call:
+
+Pivot = **50** (last element)
+
+We partition array around pivot 50:
+
+* All elements smaller than 50 → go to left side
+* All elements larger than 50 → go to right side
+
+👉 Result after partition:
+
+```
+[45, 12, 7, 32, 50, 89]
+```
+
+Here, 50 is placed in its correct sorted position (index 4).
+
+Now Quick Sort is recursively called on:
+
+* Left subarray → [45, 12, 7, 32]
+* Right subarray → [89]
+
+---
+
+### ➤ Sort left subarray [45, 12, 7, 32]
+
+Pivot = **32** (last element)
+
+Smaller elements go left of 32 → `[12, 7]`
+Larger elements go right of 32 → `[45]`
+
+So after partition:
+
+```
+[12, 7, 32, 45]
+```
+
+Now recursive calls again on:
+
+* [12, 7] → pivot = 7 → becomes [7, 12]
+* [45] → already sorted.
+
+---
+
+### ➤ Right subarray [89]
+
+Has only one element → already sorted.
+
+---
+
+### ✅ Combined final result after recursion:
+
+```
+[7, 12, 32, 45, 50, 89]
+```
+
+That’s the **sorted array** printed under:
+
+```
+Deterministic Quick Sort Result: [7, 12, 32, 45, 50, 89]
+```
+
+---
+
+## 🔹 Step 2: Randomized Quick Sort
+
+Here, each time before partitioning, a **random element** is picked as the pivot.
+
+Example run:
+
+* Random pivot might be **32** first time instead of last element.
+* Then next calls pick other random pivots.
+
+This randomness **changes the order of partitioning steps**,
+but the **final result is always the same sorted array** ✅
+(because all elements eventually get partitioned correctly).
+
+So it prints:
+
+```
+Randomized Quick Sort Result: [7, 12, 32, 45, 50, 89]
+```
+
+---
+
+## 🔹 Step 3: Time Measurement Section
+
+The program measures time for both methods using `time.time()`:
+
+```python
+start_det = time.time()
+quicksort_deterministic(...)
+end_det = time.time()
+```
+
+and similar for the randomized version.
+
+Then it converts the time difference into **microseconds**:
+
+```python
+(end_det - start_det) * 1_000_000
+```
+
+Example output might be:
+
+```
+Deterministic Quick Sort Time: 135.42 microseconds
+Randomized Quick Sort Time: 118.77 microseconds
+```
+
+🔹 These values are small because the list is tiny (6 elements).
+If you try with **larger lists**, the difference becomes more visible.
+
+---
+
+## 🔹 Step 4: Complexity Analysis (Printed Explanation)
+
+The program also prints the theoretical performance:
+
+### Deterministic Quick Sort
+
+| Case                    | Explanation                                             | Time       |
+| :---------------------- | :------------------------------------------------------ | :--------- |
+| **Best / Average Case** | Pivot divides array roughly in half                     | O(n log n) |
+| **Worst Case**          | Pivot always smallest or largest (unbalanced partition) | O(n²)      |
+| **Space**               | Recursion stack depth                                   | O(log n)   |
+
+### Randomized Quick Sort
+
+| Case                    | Explanation                                | Time       |
+| :---------------------- | :----------------------------------------- | :--------- |
+| **Best / Average Case** | Random pivot balances partition            | O(n log n) |
+| **Worst Case**          | Extremely rare (unlucky pivots every time) | O(n²)      |
+| **Space**               | Same as deterministic                      | O(log n)   |
+
+---
+
+## 🔹 Step 5: Final Output Summary
+
+Here’s what your screen shows in full:
+
+```
+--- Sorted Arrays ---
+Deterministic Quick Sort Result: [7, 12, 32, 45, 50, 89]
+Randomized Quick Sort Result: [7, 12, 32, 45, 50, 89]
+
+--- Time Analysis ---
+Deterministic Quick Sort Time: 135.42 microseconds
+Randomized Quick Sort Time: 118.77 microseconds
+
+--- Complexity Analysis ---
+Deterministic Quick Sort:
+   Best Case Time Complexity: O(n log n)
+   Average Case Time Complexity: O(n log n)
+   Worst Case Time Complexity: O(n²)
+   Space Complexity: O(log n)
+
+Randomized Quick Sort:
+   Best Case Time Complexity: O(n log n)
+   Average Case Time Complexity: O(n log n)
+   Worst Case Time Complexity: O(n²)
+   Space Complexity: O(log n)
+```
+
+---
+
+## 🔹 Step 6: Why Times Differ Slightly
+
+* **Deterministic version** might pick bad pivots (like largest element) → slower partitions.
+* **Randomized version** picks random pivots → avoids worst-case structure → slightly faster average runtime.
+
+Even though both results are identical,
+**randomized quicksort is more consistent in speed** across different inputs.
+
+---
+
+### ✅ Simple Viva Explanation
+
+> “In deterministic quick sort, the pivot is always fixed (last element),
+> while in randomized quick sort, the pivot is chosen randomly to reduce the chance of worst-case performance.
+> Both methods give the same sorted result, but randomized version usually runs faster on average.”
+
+---
+
+Would you like me to show how the **pivot changes step-by-step in randomized Quick Sort** (so you can visualize how it affects the recursion path)?

@@ -1,0 +1,162 @@
+Perfect 👏 — let’s go step-by-step and understand **how your 0/1 Knapsack output** is coming.
+
+We’ll use the same input example from the program:
+
+---
+
+### 🧩 **Input:**
+
+```
+Number of items: 3
+Item 1: value = 60, weight = 10
+Item 2: value = 100, weight = 20
+Item 3: value = 120, weight = 30
+Knapsack capacity = 50
+```
+
+---
+
+## 🔹 Step 1: Problem Recap
+
+We need to select **some (or all)** of these 3 items so that:
+
+* Total weight ≤ 50
+* Total value is **maximum**
+* We can only take an item **fully (1)** or **not at all (0)** → no fractions allowed.
+
+---
+
+## 🔹 Step 2: Building the DP Table
+
+We make a **DP matrix** where:
+
+* Rows → items (from 0 to n)
+* Columns → capacities (from 0 to W)
+
+`dp[i][w]` = maximum value we can achieve
+using first `i` items with capacity `w`.
+
+Initially, every `dp[0][w] = 0` (no items → no value).
+
+---
+
+### 🧠 Formula:
+
+For every item `i` and capacity `w`:
+
+```
+if weight[i-1] <= w:
+   dp[i][w] = max( value[i-1] + dp[i-1][w - weight[i-1]],   # include item
+                   dp[i-1][w] )                             # exclude item
+else:
+   dp[i][w] = dp[i-1][w]                                    # can't include item
+```
+
+---
+
+## 🔹 Step 3: Fill the DP Table Step-by-Step
+
+### Item 1 → value=60, weight=10
+
+* Can fit in any capacity ≥ 10
+  → So from capacity 10 to 50, we can carry value 60
+
+After item 1:
+
+```
+dp[1][10..50] = 60
+```
+
+---
+
+### Item 2 → value=100, weight=20
+
+Now we have two choices for each capacity:
+
+* If capacity < 20 → can’t include item 2, so same as before.
+* If capacity ≥ 20 → choose between including item 2 or not.
+
+Let’s check:
+
+| Capacity |                Include item 2?                | dp[i][w] value |
+| :------: | :-------------------------------------------: | :------------: |
+|    10    |                 ❌ (too heavy)                 |       60       |
+|    20    |                 ✅ max(100, 60)                |       100      |
+|    30    | ✅ max(100 + dp[1][10]=60, dp[1][30]=60) = 160 |                |
+|    40    | ✅ max(100 + dp[1][20]=60, dp[1][40]=60) = 160 |                |
+|    50    | ✅ max(100 + dp[1][30]=60, dp[1][50]=60) = 160 |                |
+
+So after item 2:
+
+```
+dp[2][50] = 160
+```
+
+---
+
+### Item 3 → value=120, weight=30
+
+Again, try to include or exclude:
+
+| Capacity | Include?                                              | Calculation | Result |
+| :------- | :---------------------------------------------------- | :---------- | :----: |
+| 10       | ❌                                                     | too heavy   |   60   |
+| 20       | ❌                                                     | too heavy   |   100  |
+| 30       | ✅ max(120, 160 from prev)                             | 160         |        |
+| 40       | ✅ max(120 + dp[2][10]=60, dp[2][40]=160) = 180        |             |        |
+| 50       | ✅ max(120 + dp[2][20]=100, dp[2][50]=160) = **220** ✅ |             |        |
+
+---
+
+## 🔹 Step 4: Final DP Table Result
+
+The last cell `dp[3][50]` = **220**
+
+This means:
+
+> The **maximum value** we can achieve for 3 items with capacity 50 is **220**.
+
+---
+
+## 🔹 Step 5: Which items were chosen?
+
+To get total = 220:
+
+* Item 3 (weight 30, value 120) → included
+* Item 2 (weight 20, value 100) → included
+* Item 1 (weight 10) → not included (would exceed capacity if added)
+
+Total weight = 20 + 30 = 50
+Total value = 100 + 120 = **220**
+
+✅ Fits exactly, uses full capacity.
+
+---
+
+### ✅ Final Output Explanation:
+
+```
+Maximum value that can be placed in the knapsack = 220
+```
+
+---
+
+## 🔹 Step 6: Time & Space Complexity Explanation
+
+| Concept               | Explanation                                     |
+| :-------------------- | :---------------------------------------------- |
+| **Time Complexity:**  | O(n × W) — we fill each cell in DP table once.  |
+| **Space Complexity:** | O(n × W) — DP table of size (items × capacity). |
+
+---
+
+### 🧠 Simple Viva Explanation:
+
+> “The program uses a DP table to test every item and capacity combination.
+> For each item, we decide whether to include it or not based on which gives higher value.
+> For the given input, the algorithm selects item 2 and 3 giving a maximum total value of 220.”
+
+---
+
+Would you like me to **add a version that also prints which exact items are chosen** (not just the final value)?
+That’s a nice addition if your teacher asks *“which items make up the optimal knapsack?”*
